@@ -1,7 +1,7 @@
 #include <Servo.h>
 
-#define OPEN_VALUE 20
-#define CLOSE_VALUE 125
+#define OPEN_VALUE 0
+#define CLOSE_VALUE 179
 #define SWITCH_PIN 7
 
 #define OPEN 1
