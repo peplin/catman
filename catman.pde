@@ -1,46 +1,47 @@
 #include <Servo.h>
 
-#define OPEN_VALUE 0
-#define CLOSE_VALUE 179
+#define BACKWARD_MOVEMENT 1300
+#define FORWARD_MOVEMENT 1800
+#define STOP_MOVEMENT 1550
 #define SWITCH_PIN 7
-
-#define OPEN 1
-#define CLOSED 0
+#define SERVO_PIN 9
+#define SPIN_DURATION 250
 
 Servo servo;
-int currentPosition;
+int lastSwitchPosition;
 
 void setup() {
     Serial.begin(9600);
     pinMode(SWITCH_PIN, INPUT);
-    servo.attach(9);
+    servo.attach(SERVO_PIN);
 
-    currentPosition = CLOSED;
+    lastSwitchPosition = 0;
 }
 
 void loop() {
     int val = digitalRead(SWITCH_PIN);
-    if(val != currentPosition) {
-        setDoorPosition();
-        currentPosition = val;
+    if(val != lastSwitchPosition) {
+        backSpin();
+        spinWheel(1);
+        lastSwitchPosition = val;
+    } else {
+        stopWheel();
     }
     delay(50);
 }
 
-void setDoorPosition() {
-    if(currentPosition == OPEN) {
-        openDoor();
-    } else {
-        closeDoor();
-    }
+void backSpin() {
+    servo.writeMicroseconds(BACKWARD_MOVEMENT);
+    delay(100);
 }
 
-void openDoor() {
-    Serial.println("Opening door");
-    servo.write(OPEN_VALUE);
+void spinWheel(int timesAround) {
+    Serial.println("Spinning the wheel");
+    servo.writeMicroseconds(FORWARD_MOVEMENT);
+    delay(SPIN_DURATION * timesAround);
 }
 
-void closeDoor() {
-    Serial.println("Closing door");
-    servo.write(CLOSE_VALUE);
+void stopWheel() {
+    Serial.println("Stopping the wheel");
+    servo.writeMicroseconds(STOP_MOVEMENT);
 }
