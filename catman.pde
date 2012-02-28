@@ -1,11 +1,10 @@
 #include <Servo.h>
 
-#define BACKWARD_MOVEMENT 1300
-#define FORWARD_MOVEMENT 1800
-#define STOP_MOVEMENT 1550
+#define CLOSED_POSITION 150
+#define OPEN_POSITION 90
 #define SWITCH_PIN 7
 #define SERVO_PIN 9
-#define SPIN_DURATION 250
+#define FEEDING_DURATION 800
 
 Servo servo;
 int lastSwitchPosition;
@@ -21,27 +20,24 @@ void setup() {
 void loop() {
     int val = digitalRead(SWITCH_PIN);
     if(val != lastSwitchPosition) {
-        backSpin();
-        spinWheel(1);
+        feedEm();
         lastSwitchPosition = val;
-    } else {
-        stopWheel();
     }
     delay(50);
 }
 
-void backSpin() {
-    servo.writeMicroseconds(BACKWARD_MOVEMENT);
-    delay(100);
+void feedEm() {
+    openDoor();
+    delay(FEEDING_DURATION);
+    closeDoor();
 }
 
-void spinWheel(int timesAround) {
-    Serial.println("Spinning the wheel");
-    servo.writeMicroseconds(FORWARD_MOVEMENT);
-    delay(SPIN_DURATION * timesAround);
+void openDoor() {
+    Serial.println("Opening the door");
+    servo.write(OPEN_POSITION);
 }
 
-void stopWheel() {
-    Serial.println("Stopping the wheel");
-    servo.writeMicroseconds(STOP_MOVEMENT);
+void closeDoor() {
+    Serial.println("Closing the door");
+    servo.write(CLOSED_POSITION);
 }
