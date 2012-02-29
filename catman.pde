@@ -13,8 +13,8 @@ int lastSwitchPosition;
 SoftwareSerial remoteSerial = SoftwareSerial(2, 3);
 
 void setup() {
-    Serial.begin(9600);
-    remoteSerial.begin(115200);
+    Serial.begin(115200);
+    remoteSerial.begin(9600);
     pinMode(SWITCH_PIN, INPUT);
     servo.attach(SERVO_PIN);
 
@@ -39,13 +39,15 @@ void feedEm() {
 
 void loop() {
     int val = digitalRead(SWITCH_PIN);
-    if(val != lastSwitchPosition) {
+    char controlCode = NULL;
+    if(remoteSerial.available()) {
+        controlCode = (char) remoteSerial.read();
+    }
+
+    if(val != lastSwitchPosition || controlCode == 'F') {
         feedEm();
         lastSwitchPosition = val;
     }
     delay(50);
 
-    if(remoteSerial.available()) {
-        Serial.print((char)remoteSerial.read());
-    }
 }
